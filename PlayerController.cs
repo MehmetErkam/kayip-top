@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private bool duzMu = true; // Cihazın düzlemini kontrol etme
-    public FixedJoystick variableJoystick; // Mobil Joysick için değişken
     private Rigidbody rigid; // rigidbody değişkeni
     public bool gyroscope = false; // Gyroscope Sensorü anahtarı
     public bool keyboard = true; // Klavye kontrolü anahtarı
@@ -57,12 +56,18 @@ public class PlayerController : MonoBehaviour
         if (joystick)
         {
             Vector3 direction = Vector3.forward * 
-            variableJoystick.Vertical + Vector3.right * 
-            variableJoystick.Horizontal;
+            FindObjectOfType<FixedJoystick>().Vertical + Vector3.right * 
+            FindObjectOfType<FixedJoystick>().Horizontal;
             
             rigid.AddForce(direction * 
             hiz * Time.fixedDeltaTime, 
             ForceMode.VelocityChange);
+        }
+
+        // Eğer oyuncu dünyadan düşerse endgame fonksiyonu başlayacak.
+        if (rigid.position.y < -2f)
+        {
+            FindObjectOfType<GameManager>().RestartScene();
         }
     }
 }
